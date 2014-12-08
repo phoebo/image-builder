@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.name          = "phoebo"
   spec.version       = Phoebo::VERSION
   spec.authors       = ["Adam Staněk"]
-  spec.email         = ["staneada@fit.cvut.cz"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.email         = ["adam.stanek@v3net.cz"]
+  spec.summary       = %q{CI worker for creating Docker images}
+  spec.description   = %q{Phoebo creates ready-to-deploy Docker images from project Git repository}
   spec.homepage      = ""
   spec.license       = "MIT"
 
