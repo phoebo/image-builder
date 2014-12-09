@@ -3,13 +3,9 @@ require 'colorize'
 
 module Phoebo
   class Application
-    attr_accessor :stdout, :stderr
+    include Console
 
     def initialize(args = [])
-      # Set current standard/error output
-      @stdout = $stdout
-      @stderr = $stderr
-
       @args = args
     end
 
@@ -19,28 +15,27 @@ module Phoebo
 
       if options[:error]
         result = 1
-        @stderr.puts 'Error: '.red + options[:error]
-        @stderr.puts
+        stderr.puts 'Error: '.red + options[:error]
+        stderr.puts
       end
 
-      result |= send(('run_' + options[:mode].to_s).to_sym, options).to_i
-      stdout.puts
-      result
+      send(('run_' + options[:mode].to_s).to_sym, options).to_i || result
     end
 
     private
 
     def run_normal(options)
-      # TODO
       fail IOError, 'File ' + options[:files].first.cyan + ' not found'
     end
 
     def run_help(_options)
       stdout.puts @option_parser
+      stdout.puts
     end
 
     def run_version(_options)
-      stdout.puts 'Version: #{Phoebo::VERSION}'
+      stdout.puts "Version: #{Phoebo::VERSION}"
+      stdout.puts
     end
 
     def parse_options

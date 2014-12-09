@@ -2,6 +2,7 @@ require 'phoebo/version'
 
 module Phoebo
   autoload :Application, 'phoebo/application'
+  autoload :Console,     'phoebo/console'
 
   class PhoeboError < StandardError
     def self.status_code(code)
