@@ -26,6 +26,11 @@ class Phoebo::Environment
     @env = env
   end
 
+  # Temporary files
+  def temp_path
+    "#{File::SEPARATOR}tmp"
+  end
+
   private
 
   # Look up executable in system path ($PATH)

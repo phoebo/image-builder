@@ -6,10 +6,15 @@ Signal.trap("INT") { exit 130 }
 require 'phoebo'
 
 begin
-  exit Phoebo::Application.new(ARGV).run
+  app = Phoebo::Application.new(ARGV)
+  code = app.run
+  app.cleanup
+  exit code
 
 rescue Phoebo::PhoeboError => err
   $stderr.puts "Error: ".red + err.message
   $stdout.puts
   exit err.status_code
+ensure
+  app.cleanup
 end

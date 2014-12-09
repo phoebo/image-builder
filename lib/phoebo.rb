@@ -4,6 +4,7 @@ module Phoebo
   autoload :Application, 'phoebo/application'
   autoload :Console,     'phoebo/console'
   autoload :Environment, 'phoebo/environment'
+  autoload :Util,        'phoebo/util'
 
   class PhoeboError < StandardError
     def self.status_code(code)

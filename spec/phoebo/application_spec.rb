@@ -20,6 +20,19 @@ describe Phoebo::Application do
     it 'is runnable' do
       expect(app.respond_to?(:run)).to eq true
     end
+
+    it 'holds instance' do
+      app
+      expect(described_class.instance.is_a?(described_class)).to be true
+    end
+
+    it 'creates Environment' do
+      expect(app.environment.is_a?(Phoebo::Environment)).to be true
+    end
+
+    it 'creates TemporaryFileManager' do
+      expect(app.temp_file_manager.is_a?(Phoebo::Util::TempFileManager)).to be true
+    end
   end
 
   context '--version argument' do
