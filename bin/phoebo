@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+# Exit cleanly from an early interrupt
+Signal.trap("INT") { exit 130 }
+
+require 'phoebo'
+
+begin
+  exit Phoebo::Application.new(ARGV).run
+
+rescue Phoebo::PhoeboError => err
+  $stderr.puts "Error: ".red + err.message
+  $stdout.puts
+  exit err.status_code
+end
