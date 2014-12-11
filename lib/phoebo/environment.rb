@@ -31,6 +31,14 @@ class Phoebo::Environment
     "#{File::SEPARATOR}tmp"
   end
 
+  # Check availability
+  def check_availability(*executables)
+    executables.each do |exe|
+      fail Phoebo::ExternalError, "Program #{exe} not found" \
+        unless send("#{exe}_path".to_sym)
+    end
+  end
+
   private
 
   # Look up executable in system path ($PATH)

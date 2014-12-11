@@ -13,4 +13,5 @@ module Phoebo
   end
 
   class IOError < PhoeboError; status_code(4) ; end
+  class ExternalError < PhoeboError; status_code(5) ; end
 end
