@@ -2,6 +2,7 @@ require 'optparse'
 require 'colorize'
 require 'docker'
 require 'rugged'
+require 'pathname'
 
 module Phoebo
   #
