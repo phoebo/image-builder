@@ -59,8 +59,9 @@ module Phoebo
 
         begin
           stdout.puts "Building image " + "...".light_black
-          built_image = ::Docker::Image.build_from_tar(tar_stream.tap(&:rewind))
-
+          built_image = ::Docker::Image.build_from_tar(tar_stream.tap(&:rewind)) { |text|
+            Docker.process_output_stream(stdout, text)
+          }
 
           # TODO: Perhaps we should calculate size from virtual size of the base,
           # this is not working very well while merging layers.

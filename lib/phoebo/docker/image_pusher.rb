@@ -21,9 +21,10 @@ module Phoebo
         end
 
         stdout.puts "Pushing image " + image_id.cyan + " ...".light_black
-
         built_image = ::Docker::Image.get(image_id)
-        built_image.push
+        built_image.push { |text|
+            Docker.process_output_stream(stdout, text)
+        }
       end
     end
   end
