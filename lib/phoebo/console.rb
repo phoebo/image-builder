@@ -3,10 +3,10 @@
 # It creates consistent output layer for our classes.
 #
 # Use `include Phoebo::Console` in classes which require to write console output.
-# You can override output stream for each class on class and instance level.
+# You can override output stream for each object on class and instance level.
 #
 # MyClass.stdout = StringIO.new sets stream for all future instances
-# MyClass.new.stdout = StringIO.new sets stream for this particular instance
+# MyClass.new.stdout = StringIO.new sets stream for a particular instance
 #
 # Default output streams are $stdout / $stderr
 #
