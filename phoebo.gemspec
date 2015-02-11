@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["adam.stanek@v3net.cz"]
   spec.summary       = %q{CI worker for creating Docker images}
   spec.description   = %q{Phoebo creates ready-to-deploy Docker images from project Git repository}
-  spec.homepage      = ""
+  spec.homepage      = "https://gitlab.fit.cvut.cz/phoebo/phoebo"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -20,10 +20,10 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '~> 2.1'
 
-  spec.add_dependency "colorize"
-  spec.add_dependency "docker-api"
-  spec.add_dependency "rugged"
+  spec.add_dependency "colorize", '~> 0'
+  spec.add_dependency "docker-api", '~> 1.17'
+  spec.add_dependency "rugged", '~> 0.21'
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec", '~> 3.0'
 end
