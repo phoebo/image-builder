@@ -48,8 +48,16 @@ RUN rbenv install $RBENV_VERSION
 # Install Phoebo using gem
 RUN /root/.rbenv/shims/gem install phoebo
 
+# Fix broken wrapdocker
+# Note: We might want to stay away from jpetazzo/dind completely. The wrapdocker
+# script is only interesting thing there and we need to patch it anyway.
+RUN rm -rf /usr/local/bin/wrapdocker
+ADD ./wrapdocker /usr/local/bin/wrapdocker
+RUN chmod +x /usr/local/bin/wrapdocker
+
 # Docker daemon will log into /var/log/docker.log
 ENV LOG file
 
 # Default shell (We need to perform "login" to read from /etc/profile)
 ENTRYPOINT ["/bin/bash", "--login", "wrapdocker"]
+CMD ["/bin/bash"]
