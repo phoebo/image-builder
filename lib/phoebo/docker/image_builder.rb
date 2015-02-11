@@ -1,3 +1,5 @@
+require 'rubygems/package'
+
 module Phoebo
   module Docker
     class ImageBuilder
