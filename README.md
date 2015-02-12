@@ -2,7 +2,7 @@
 
 ## DSL example
 
-~~~
+~~~ruby
 Phoebo.configure(1) {
 
   # Create image based on Apache + mod_php
@@ -27,7 +27,7 @@ Phoebo.configure(1) {
 
 ## Usage
 
-~~~
+~~~bash
 sudo docker pull phoebo/phoebo:latest
 sudo docker run -ti --privileged -v ~/nette-example-keys:/root/deploy-keys phoebo/phoebo:latest phoebo \
    --repository ssh://gitlab.fit.cvut.cz/phoebo/nette-example.git \
@@ -42,13 +42,13 @@ sudo docker run -ti --privileged -v ~/nette-example-keys:/root/deploy-keys phoeb
 
 For better integration into your CI workflow you can specify build job by URL instead of verbose CLI arguments.
 
-~~~
+~~~bash
 phoebo --from-url http://domain.tld/api/requests/2e2996fe8420
 ~~~
 
 URL should return JSON formatted payload with following structure:
 
-~~~
+~~~javascript
 {
 	"id": "2e2996fe8420",
 	"repo_url": "ssh://gitlab.fit.cvut.cz/phoebo/nette-example.git",
@@ -66,7 +66,7 @@ If other CLI arguments are present they will override those loaded from URL.
 
 You can optionally let Phoebo notify you when the build is ready.
 
-~~~
+~~~bash
 phoebo --ping-url http://domain.tld/api/notify
 ~~~
 
@@ -74,7 +74,7 @@ Notification is sent as JSON formatted HTTP POST request with structure bellow.
 The payload contains the same ID you've passed to application with your JSON request.
 Other than that payload contains list of tasks with arguments and image on which they should be run.
 
-~~~
+~~~javascript
 {
    "id": "2e2996fe8420",
    "tasks":[
