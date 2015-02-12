@@ -73,11 +73,25 @@ describe Phoebo::Application do
        'dir1', 'dir2'
     ]}
 
-    subject(:app) { described_class.new(args) }
+    subject(:app) {
+      app = described_class.new(args)
+      app.temp_file_manager = instance_double(Phoebo::Util::TempFileManager)
+      allow(app.temp_file_manager).to receive(:path) { |*args| "/tmp/random/#{args.join('/')}" }
+      allow(app.temp_file_manager).to receive(:need_cleanup?).and_return(true)
+      app
+    }
+
+    before(:each) {
+      allow(Phoebo::Git).to receive(:clone).and_return(nil)
+    }
 
     it 'returns 1 if no files were processed' do
-      allow(Phoebo::Git).to receive(:clone).and_return(nil)
       expect(app.run).to eq 1
+    end
+
+    it 'cleans temporary files' do
+      expect(app.temp_file_manager).to receive(:cleanup)
+      app.cleanup
     end
   end
 

@@ -21,6 +21,8 @@ module Phoebo
   class Application
     include Console
 
+    attr_writer :environment, :temp_file_manager
+
     # Creates application
     def initialize(args = [])
       @args = args
