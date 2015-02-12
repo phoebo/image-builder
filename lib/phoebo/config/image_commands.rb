@@ -1,4 +1,4 @@
-# Auto-require for all Image commands
+# Auto-require
 Dir[File.dirname(__FILE__) + '/image_commands/*.rb'].each { |file| require file }
 
 # Module containing all Image commands

@@ -6,8 +6,10 @@ module Phoebo
   autoload :Console,            'phoebo/console'
   autoload :Docker,             'phoebo/docker'
   autoload :Environment,        'phoebo/environment'
+  autoload :Git,                'phoebo/git'
   autoload :Request,            'phoebo/request'
   autoload :Util,               'phoebo/util'
+  autoload :Worker,             'phoebo/worker'
 
   class PhoeboError < StandardError
     def self.status_code(code)

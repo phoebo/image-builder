@@ -1,4 +1,5 @@
 require 'rubygems/package'
+require 'docker'
 
 module Phoebo
   module Docker

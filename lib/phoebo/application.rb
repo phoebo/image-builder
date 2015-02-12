@@ -1,7 +1,5 @@
 require 'optparse'
 require 'colorize'
-require 'docker'
-require 'rugged'
 require 'pathname'
 
 module Phoebo
@@ -55,7 +53,7 @@ module Phoebo
         stderr.puts
       end
 
-      send(('run_' + options[:mode].to_s).to_sym, options).to_i || result
+      [send(('run_' + options[:mode].to_s).to_sym, options).to_i, result].max
     end
 
     # Cleanup sequence
@@ -88,81 +86,44 @@ module Phoebo
       # Raises InvalidRequestError if invalid
       request.validate
 
-      # Default project path, is PWD
-      project_path = Dir.pwd
-
-      # Clone remote repository
+      # Prepare project directory
       if request.repo_url
-        # Use passed SSH keys or fallback to system authentication
-        if request.ssh_private_file
-          cred = Rugged::Credentials::SshKey.new(
-            username: request.ssh_user,
-            publickey: request.ssh_public_file,
-            privatekey: request.ssh_private_file
-          )
-        else
-          cred = Rugged::Credentials::Default.new
-        end
-
-        # Create temp dir.
+        # Create temp dir & clone
         project_path = temp_file_manager.path('project')
+        stdout.puts "Cloning remote repository " + "...".light_black
+        Git.clone(request, project_path)
 
-        # Clone remote repository
-        begin
-          stdout.puts "Cloning remote repository " + "...".light_black
-          Rugged::Repository.clone_at request.repo_url,
-            project_path, credentials: cred
-
-        rescue Rugged::SshError => e
-          raise unless e.message.include?('authentication')
-          raise IOError, "Unable to clone remote repository. SSH authentication failed."
-        end
-      end
-
-      # Prepare Docker credentials
-      if request.docker_user
-        pusher = Docker::ImagePusher.new(
-          request.docker_user,
-          request.docker_password,
-          request.docker_email
-        )
       else
-        pusher = nil
+        project_path = Dir.pwd
       end
 
-      # Exit code
+      # Worker
+      worker = Worker.new(request)
       result = 0
 
-      # Process all the files
+      # Process all
       options[:files] << '.' if options[:files].empty?
       options[:files].each do |rel_path|
+        path = (Pathname.new(project_path) + rel_path)
 
-        path = (Pathname.new(project_path) + rel_path).realpath.to_s
-
-        # Prepare config path
-        config_filename = 'Phoebofile'
-        config_path = "#{path}#{File::SEPARATOR}#{config_filename}"
-
-        # Check if config exists -> resumable error
-        unless File.exists?(config_path)
-          stderr.puts "No #{config_filename} found in #{path}".red
+        # Directory does not exist -> resume with next dir.
+        if path.exist?
+          path = path.realpath.to_s
+        else
+          stderr.puts "Directory #{path.to_s} does not exist".red
           result = 1
           next
         end
 
-        # Load config
-        config = Config.load_from_file(config_path)
-
-        # Build & push image
-        builder = Docker::ImageBuilder.new(path)
-        config.images.each do |image|
-          image_id = builder.build(image)
-          pusher.push(image_id) if pusher
+        # Directory does not have any config -> nothing to do -> resume with next dir.
+        unless worker.process(path)
+          stderr.puts "No config found in #{path}".red
+          result = 1
+          next
         end
       end
 
-      puts "Everything done :-)".green
-
+      stdout.puts "Everything done :-)".green
       result
     end
 

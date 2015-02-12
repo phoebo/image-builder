@@ -1,3 +1,5 @@
+require 'docker'
+
 module Phoebo
   module Docker
     class ImagePusher
