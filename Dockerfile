@@ -52,15 +52,19 @@ ENV CONFIGURE_OPTS --disable-install-doc
 ENV RBENV_VERSION 2.2.0
 RUN /root/.rbenv/bin/rbenv install $RBENV_VERSION
 
-# Install Phoebo using gem
-RUN /root/.rbenv/shims/gem install phoebo
+# Docker daemon will log into /var/log/docker.log
+ENV LOG file
 
 # Wrap docker script
 # See https://github.com/jpetazzo/dind for original version
 ADD ./wrapdocker /usr/local/bin/wrapdocker
 
-# Docker daemon will log into /var/log/docker.log
-ENV LOG file
+# Little trick to ensure that the next step is not cached
+# (it will be invalidated whenever we update our gem)
+ADD https://rubygems.org/gems/phoebo/versions.atom /tmp/phoebo-versions.atom
+
+# Install Phoebo using gem
+RUN /root/.rbenv/shims/gem install phoebo
 
 # Default shell (We need to perform "login" to read from /etc/profile)
 ENTRYPOINT ["/bin/bash", "--login", "wrapdocker"]
