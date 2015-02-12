@@ -32,7 +32,7 @@ module Phoebo
   # Configure Phoebo environment from Phoebofile
   def self.configure(version, &block)
     raise ConfigError, "Configuration version #{version} not supported" if version != 1
-    Config.load_from_block(block)
+    Config.new_from_block(block)
   end
 
 end

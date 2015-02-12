@@ -20,7 +20,7 @@ module Phoebo
 
       if File.exists?(config_path)
         # Load config
-        config = Config.load_from_file(config_path)
+        config = Config.new_from_file(config_path)
 
         # Build & push image
         builder = Docker::ImageBuilder.new(path)

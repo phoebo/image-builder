@@ -121,13 +121,10 @@ describe Phoebo::Request do
   # TODO: cover all possible states
   context 'loading from url' do
     let(:http_response) do
-      Class.new do
-        attr_reader :body, :code
-        def initialize(body)
-          @body = body
-          @code = 200
-        end
-      end.new(json)
+      response = double
+      allow(response).to receive(:code).and_return(200)
+      allow(response).to receive(:body).and_return(json)
+      response
     end
 
     it 'loads data' do

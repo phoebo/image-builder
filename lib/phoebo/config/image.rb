@@ -3,10 +3,11 @@ module Phoebo
     class Image
       attr_accessor :actions, :name, :from
 
-      def initialize(name, from)
+      def initialize(name, from, block = nil)
         @actions = []
         @name = name
         @from = from
+        dsl_eval(block) if block
       end
 
       # Evaluate block within DSL context

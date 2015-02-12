@@ -7,10 +7,10 @@ module Phoebo
 
     # Loads config from file
     # @see Phoebo.configure()
-    def self.load_from_file(file_path)
+    def self.new_from_file(file_path)
       begin
         @instance = nil
-        Kernel.load File.expand_path(file_path), true
+        Kernel.load file_path, true
         @instance
 
       rescue ::SyntaxError => e
@@ -18,7 +18,7 @@ module Phoebo
       end
     end
 
-    def self.load_from_block(block)
+    def self.new_from_block(block)
       @instance = self.new
       @instance.dsl_eval(block)
     end
@@ -42,8 +42,7 @@ module Phoebo
       end
 
       def image(name, from, &block)
-        @config.images << (img_instance = Image.new(name, from))
-        img_instance.dsl_eval(block)
+        @config.images << (img_instance = Image.new(name, from, block))
         img_instance
       end
     end
