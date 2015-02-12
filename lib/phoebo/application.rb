@@ -72,29 +72,36 @@ module Phoebo
     # Run in normal mode
     def run_normal(options)
 
+      request = Request.new
+      request.load_from_hash!(options[:request])
+
+      if options[:request_file]
+        stdout.puts "Loading request from file: " + options[:request_file].cyan
+        request.load_from_file!(options[:request_file])
+      end
+
+      if options[:request_url]
+        stdout.puts "Fetching request from URL: " + options[:request_url].cyan + "...".light_black
+        request.load_from_url!(options[:request_url])
+      end
+
+      # Raises InvalidRequestError if invalid
+      request.validate
+
       # Default project path, is PWD
       project_path = Dir.pwd
 
-      # If we are building image from Git repository
-      if options[:repository]
-
-        # Prepare SSH credentials if necessary
-        if options[:ssh_key]
-          private_path = Pathname.new(options[:ssh_key])
-
-          raise InvalidArgumentError, "SSH key not found" unless private_path.exist?
-          raise InvalidArgumentError, "Missing public SSH key" unless options[:ssh_public]
-
-          public_path = Pathname.new(options[:ssh_public])
-          raise InvalidArgumentError, "Public SSH key not found" unless public_path.exist?
-
+      # Clone remote repository
+      if request.repo_url
+        # Use passed SSH keys or fallback to system authentication
+        if request.ssh_private_file
           cred = Rugged::Credentials::SshKey.new(
-            username: options[:ssh_user],
-            publickey: public_path.realpath.to_s,
-            privatekey: private_path.realpath.to_s
+            username: request.ssh_user,
+            publickey: request.ssh_public_file,
+            privatekey: request.ssh_private_file
           )
         else
-          cred = nil
+          cred = Rugged::Credentials::Default.new
         end
 
         # Create temp dir.
@@ -103,7 +110,7 @@ module Phoebo
         # Clone remote repository
         begin
           stdout.puts "Cloning remote repository " + "...".light_black
-          Rugged::Repository.clone_at options[:repository],
+          Rugged::Repository.clone_at request.repo_url,
             project_path, credentials: cred
 
         rescue Rugged::SshError => e
@@ -113,14 +120,11 @@ module Phoebo
       end
 
       # Prepare Docker credentials
-      if options[:docker_username]
-        raise InvalidArgumentError, "Missing docker password." unless options[:docker_password]
-        raise InvalidArgumentError, "Missing docker e-mail." unless options[:docker_email]
-
+      if request.docker_user
         pusher = Docker::ImagePusher.new(
-          options[:docker_username],
-          options[:docker_password],
-          options[:docker_email]
+          request.docker_user,
+          request.docker_password,
+          request.docker_email
         )
       else
         pusher = nil
@@ -176,7 +180,7 @@ module Phoebo
 
     # Parse passed command-line options
     def parse_options
-      options = { error: nil, mode: :normal, files: [], ssh_user: 'git' }
+      options = { error: nil, mode: :normal, request: {}, files: [], ssh_user: 'git' }
 
       unless @option_parser
         @option_parser = OptionParser.new
@@ -184,31 +188,39 @@ module Phoebo
           "Usage: #{@option_parser.program_name} [options] file"
 
         @option_parser.on_tail('-rURL', '--repository=URL', 'Repository URL') do |value|
-          options[:repository] = value
+          options[:request][:repo_url] = value
         end
 
         @option_parser.on_tail('--ssh-user=USERNAME', 'Username for Git over SSH (Default: git)') do |value|
-          options[:ssh_user] = value
+          options[:request][:ssh_user] = value
         end
 
         @option_parser.on_tail('--ssh-public=PATH', 'Path to public SSH key for Git repository') do |value|
-          options[:ssh_public] = value
+          options[:request][:ssh_public_file] = value
         end
 
         @option_parser.on_tail('--ssh-key=PATH', 'Path to SSH key for Git repository') do |value|
-          options[:ssh_key] = value
+          options[:request][:ssh_private_file] = value
         end
 
         @option_parser.on_tail('--docker-user=USERNAME', 'Username for Docker Registry') do |value|
-          options[:docker_username] = value
+          options[:request][:docker_user] = value
         end
 
         @option_parser.on_tail('--docker-password=PASSWORD', 'Password for Docker Registry') do |value|
-          options[:docker_password] = value
+          options[:request][:docker_password] = value
         end
 
         @option_parser.on_tail('--docker-email=EMAIL', 'E-mail for Docker Registry') do |value|
-          options[:docker_email] = value
+          options[:request][:docker_email] = value
+        end
+
+        @option_parser.on_tail('-U', '--from-url=REQUEST_URL', 'Process build request from URL') do |value|
+          options[:request_url] = value
+        end
+
+        @option_parser.on_tail('-f', '--from-file=PATH', 'Process build request from local file') do |value|
+          options[:request_file] = value
         end
 
         @option_parser.on_tail('--version', 'Show version info') do

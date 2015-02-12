@@ -1,12 +1,13 @@
 require 'phoebo/version'
 
 module Phoebo
-  autoload :Application, 'phoebo/application'
-  autoload :Config,      'phoebo/config'
-  autoload :Console,     'phoebo/console'
-  autoload :Docker,      'phoebo/docker'
-  autoload :Environment, 'phoebo/environment'
-  autoload :Util,        'phoebo/util'
+  autoload :Application,        'phoebo/application'
+  autoload :Config,             'phoebo/config'
+  autoload :Console,            'phoebo/console'
+  autoload :Docker,             'phoebo/docker'
+  autoload :Environment,        'phoebo/environment'
+  autoload :Request,            'phoebo/request'
+  autoload :Util,               'phoebo/util'
 
   class PhoeboError < StandardError
     def self.status_code(code)
@@ -15,6 +16,7 @@ module Phoebo
   end
 
   class InvalidArgumentError < PhoeboError; status_code(4) ; end
+  class InvalidRequestError < InvalidArgumentError ; end
   class IOError < PhoeboError; status_code(5) ; end
   class ExternalError < PhoeboError; status_code(6) ; end
 
