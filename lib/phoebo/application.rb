@@ -102,6 +102,7 @@ module Phoebo
       # Worker
       worker = Worker.new(request)
       result = 0
+      configs = []
 
       # Process all
       options[:files] << '.' if options[:files].empty?
@@ -118,11 +119,19 @@ module Phoebo
         end
 
         # Directory does not have any config -> nothing to do -> resume with next dir.
-        unless worker.process(path)
+        unless config = worker.process(path)
           stderr.puts "No config found in #{path}".red
           result = 1
           next
         end
+
+        configs << config
+      end
+
+      # Ping
+      if request.ping_url
+        stdout.puts "Notifying URL: " + request.ping_url.cyan + "...".light_black
+        Ping.send(request, configs)
       end
 
       stdout.puts "Everything done :-)".green
@@ -176,6 +185,10 @@ module Phoebo
 
         @option_parser.on_tail('--docker-email=EMAIL', 'E-mail for Docker Registry') do |value|
           options[:request][:docker_email] = value
+        end
+
+        @option_parser.on_tail('--ping-url=REQUEST_URL', 'URL will be notified after build') do |value|
+          options[:request][:ping_url] = value
         end
 
         @option_parser.on_tail('-U', '--from-url=REQUEST_URL', 'Process build request from URL') do |value|

@@ -21,6 +21,11 @@ describe Phoebo::Request do
       expect(subject.errors.select { |e| e.include?('Invalid repository URL.') }).not_to be_empty
     end
 
+    it 'returns error on invalid ping URL' do
+      subject.ping_url = '@host:a.git'
+      expect(subject.errors.select { |e| e.include?('Invalid ping URL.') }).not_to be_empty
+    end
+
     it 'valid repo url returns no errors' do
       subject.repo_url = 'ssh://host/path/to/repo.git'
       expect(subject.errors.select { |e| e.include?('Invalid repository URL.') }).to be_empty

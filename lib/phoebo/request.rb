@@ -10,6 +10,7 @@ module Phoebo
   class Request
     attr_accessor :repo_url, :ssh_user, :ssh_private_file, :ssh_public_file
     attr_accessor :docker_user, :docker_password, :docker_email
+    attr_accessor :id, :ping_url
     attr_writer :temp_file_manager
 
     def initialize
@@ -105,6 +106,16 @@ module Phoebo
         errors << "Missing Docker user." unless docker_user
         errors << "Missing Docker password." unless docker_password
         errors << "Missing Docker email." unless docker_email
+      end
+
+      if ping_url
+        begin
+          uri = URI(ping_url)
+          errors << "Invalid ping URL. Only HTTP / HTTPS supported at the moment. Expected format: https://domain.tld/api/notify" \
+             unless uri.scheme == 'http' || uri.scheme == 'https'
+        rescue URI::InvalidURIError
+          errors << "Invalid ping URL. Expected format: https://domain.tld/api/notify"
+        end
       end
 
       errors

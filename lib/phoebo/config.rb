@@ -3,7 +3,7 @@ module Phoebo
     autoload :Image, 'phoebo/config/image'
     autoload :ImageCommands, 'phoebo/config/image_commands'
 
-    attr_accessor :images
+    attr_accessor :images, :tasks
 
     # Loads config from file
     # @see Phoebo.configure()
@@ -26,6 +26,7 @@ module Phoebo
     # Instance initialization
     def initialize
       @images = []
+      @tasks = []
     end
 
     # Evaluate block within DSL context
@@ -44,6 +45,17 @@ module Phoebo
       def image(name, from, &block)
         @config.images << (img_instance = Image.new(name, from, block))
         img_instance
+      end
+
+      def task(name, image, *args)
+        task = {
+          name: name,
+          image: image
+        }
+
+        task[:cmd] = args unless args.empty?
+        @config.tasks << task
+        task
       end
     end
 

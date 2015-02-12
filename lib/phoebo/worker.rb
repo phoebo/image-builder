@@ -29,7 +29,7 @@ module Phoebo
           pusher.push(image_id) if @request.docker_user
         end
 
-        true
+        config
       else
         false
       end

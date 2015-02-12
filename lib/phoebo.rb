@@ -7,6 +7,7 @@ module Phoebo
   autoload :Docker,             'phoebo/docker'
   autoload :Environment,        'phoebo/environment'
   autoload :Git,                'phoebo/git'
+  autoload :Ping,               'phoebo/ping'
   autoload :Request,            'phoebo/request'
   autoload :Util,               'phoebo/util'
   autoload :Worker,             'phoebo/worker'
