@@ -48,4 +48,50 @@ describe Phoebo::Application do
     end
   end
 
+  context '--help argument' do
+    subject(:app) { described_class.new(['--help']) }
+
+    it 'returns 0' do
+      expect(app.run).to eq 0
+    end
+
+    it 'shows usage' do
+      app.run
+      expect(app.stdout.string).to include('Usage:')
+    end
+  end
+
+  context 'normal run with all arguments' do
+    let(:args) {[
+       '--repository', 'ssh://host/path/to/repo.git',
+       '--ssh-user', 'git',
+       '--ssh-key', './key',
+       '--ssh-public', './key.pub',
+       '--docker-user', 'joe',
+       '--docker-password', 'secret123',
+       '--docker-email', 'joe@domain.tld',
+       'dir1', 'dir2'
+    ]}
+
+    subject(:app) { described_class.new(args) }
+
+    it 'returns 1 if no files were processed' do
+      allow(Phoebo::Git).to receive(:clone).and_return(nil)
+      expect(app.run).to eq 1
+    end
+  end
+
+  context 'bad arguments' do
+    subject(:app) { described_class.new(['--foobar']) }
+
+    it 'returns 1' do
+      expect(app.run).to eq 1
+    end
+
+    it 'shows usage' do
+      app.run
+      expect(app.stdout.string).to include('Usage:')
+    end
+  end
+
 end
