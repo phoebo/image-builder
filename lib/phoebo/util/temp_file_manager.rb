@@ -15,7 +15,7 @@ class Phoebo::Util::TempFileManager
     unless @process_path
       @process_path = "#{@base_path}#{File::SEPARATOR}phoebo-#{Process.pid}"
       FileUtils::mkdir_p @process_path
-      FileUtils::chmod 0600, @process_path
+      FileUtils::chmod 0700, @process_path
     end
 
     File.join(@process_path, components)
