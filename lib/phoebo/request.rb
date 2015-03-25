@@ -76,7 +76,7 @@ module Phoebo
       end
 
       # TODO: handle redirects
-      raise IOError, "Unable to load URL #{url}" unless res.code == 200
+      raise IOError, "Unable to load URL #{url}" unless res.is_a?(Net::HTTPOK)
 
       load_from_json!(res.body)
     end

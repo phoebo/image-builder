@@ -20,7 +20,7 @@ module Phoebo
           clone_path, credentials: cred
 
       rescue Rugged::SshError => e
-        raise unless e.message.include?('authentication')
+        raise unless e.message.include?('auth')
         raise IOError, "Unable to clone remote repository. SSH authentication failed."
       end
     end

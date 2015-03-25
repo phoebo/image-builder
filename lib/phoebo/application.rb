@@ -81,7 +81,7 @@ module Phoebo
       end
 
       if options[:request_url]
-        stdout.puts "Fetching request from URL: " + options[:request_url].cyan + "...".light_black
+        stdout.puts "Fetching request from URL: " + options[:request_url].cyan + " " + "...".light_black
         request.load_from_url!(options[:request_url])
       end
 
