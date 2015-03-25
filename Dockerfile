@@ -46,6 +46,7 @@ RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv \
  && rm -rf /root/.rbenv/.git \
  && rm -rf /root/.rbenv/plugins/ruby-build/.git \
  && echo 'eval "$(/root/.rbenv/bin/rbenv init -)"' > /etc/profile.d/rbenv.sh
+ && chmod +x /etc/profile.d/rbenv.sh
 
 # Install Ruby
 ENV CONFIGURE_OPTS --disable-install-doc
