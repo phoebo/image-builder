@@ -45,7 +45,7 @@ RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv \
  && git clone https://github.com/sstephenson/ruby-build.git /root/.rbenv/plugins/ruby-build \
  && rm -rf /root/.rbenv/.git \
  && rm -rf /root/.rbenv/plugins/ruby-build/.git \
- && echo 'eval "$(/root/.rbenv/bin/rbenv init -)"' > /etc/profile.d/rbenv.sh
+ && echo 'eval "$(/root/.rbenv/bin/rbenv init -)"' > /etc/profile.d/rbenv.sh \
  && chmod +x /etc/profile.d/rbenv.sh
 
 # Install Ruby
