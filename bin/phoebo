@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# Fix for CI
+$stderr = $stdout
+$stdout.sync = true
+
 # Exit cleanly from an early interrupt
 Signal.trap("INT") { exit 130 }
 
