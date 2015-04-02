@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$NO_DIND" ]; then
+    [[ $1 ]] && exec bash -c "$*"
+    exec bash --login
+fi
+
 # Ensure that all nodes in /dev/mapper correspond to mapped devices currently loaded by the device-mapper kernel driver
 dmsetup mknodes
 
@@ -134,7 +139,6 @@ else
         fi
         sleep 1
     done
-    # [[ $1 ]] && exec "$@"
-    # exec bash --login
-    /bin/bash -c "$*"
+    [[ $1 ]] && exec bash -c "$*"
+    exec bash --login
 fi
