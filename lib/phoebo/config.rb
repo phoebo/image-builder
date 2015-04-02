@@ -90,8 +90,6 @@ module Phoebo
           raise Phoebo::SyntaxError.new("Unexpected parameter #{options.keys.first} for service #{name}.")
         end
 
-        puts task.inspect
-
         @config.tasks << task
         task
       end
