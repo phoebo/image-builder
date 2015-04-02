@@ -14,11 +14,14 @@ module Phoebo
       def build(image)
         project_files = { }
         dockerfile = []
-        dockerfile << "FROM #{image.from}"
 
-        # Apply all defined actions
-        image.actions.each do |action|
-          action.call(dockerfile, project_files)
+        if image.from.first == :base_image
+          dockerfile << "FROM #{image.from[1]}"
+
+          # Apply all defined actions
+          image.actions.each do |action|
+            action.call(dockerfile, project_files)
+          end
         end
 
         # TODO: Honor file mode

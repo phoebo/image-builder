@@ -42,7 +42,7 @@ describe Phoebo::Config do
     let(:dsl) {
       child_block = image_dsl_block
       Proc.new {
-        image('image-name', 'base-image-name', &child_block)
+        image('image-name', from: 'base-image-name', &child_block)
       }
     }
 
