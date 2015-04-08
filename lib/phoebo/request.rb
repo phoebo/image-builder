@@ -36,6 +36,21 @@ module Phoebo
       IO.write(@ssh_public_file, key_content)
     end
 
+    # Secrets (default: empty hash)
+    def secrets
+      @secrets ||= {}
+    end
+
+    # Secrets validation on set
+    def secrets=(hash)
+      hash.each do |key, value|
+        raise InvalidRequestError, "Invalid format for request secret #{key.inspect}" \
+          unless value.is_a? String or value.is_a? Numeric
+      end
+
+      @secrets = hash
+    end
+
     # Loads request with data from hash
     def load_from_hash!(hash)
       hash.each do |k, v|
@@ -50,7 +65,7 @@ module Phoebo
     # Loads request from JSON string
     def load_from_json!(raw_data)
       begin
-        hash = JSON.parse(raw_data)
+        hash = JSON.parse(raw_data, symbolize_names: true)
       rescue JSON::ParserError => e
         raise InvalidRequestError, "Malformed JSON data."
       end

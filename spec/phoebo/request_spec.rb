@@ -85,7 +85,10 @@ describe Phoebo::Request do
   let(:json) do
     <<-EOS
     {
-      "repo_url": "ssh://somehost.tld/user/repo.git"
+      "repo_url": "ssh://somehost.tld/user/repo.git",
+      "secrets": {
+        "dbpassword": "somesecretpassword"
+      }
     }
     EOS
   end
@@ -106,6 +109,7 @@ describe Phoebo::Request do
     it 'applies arguments' do
       subject.load_from_json!(json)
       expect(subject.repo_url).to eql('ssh://somehost.tld/user/repo.git')
+      expect(subject.secrets[:dbpassword]).to eql('somesecretpassword')
     end
   end
 
