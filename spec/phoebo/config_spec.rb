@@ -48,7 +48,7 @@ describe Phoebo::Config do
 
     it 'processes images' do
       image = instance_double(Phoebo::Config::Image)
-      expect(Phoebo::Config::Image).to receive(:new).with('image-name', 'base-image-name', image_dsl_block).and_return(image)
+      expect(Phoebo::Config::Image).to receive(:new).with('image-name', { from: 'base-image-name' }, image_dsl_block).and_return(image)
 
       subject.dsl_eval(dsl)
       expect(subject.images).to include(image)

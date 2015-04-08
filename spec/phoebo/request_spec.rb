@@ -123,19 +123,19 @@ describe Phoebo::Request do
     end
   end
 
-  # TODO: cover all possible states
-  context 'loading from url' do
-    let(:http_response) do
-      response = double
-      allow(response).to receive(:code).and_return(200)
-      allow(response).to receive(:body).and_return(json)
-      response
-    end
+  # TODO: cover all possible states and use some HTTP mocking library
+  # context 'loading from url' do
+  #   let(:http_response) do
+  #     response = double(Net::HTTPOK)
+  #     allow(response).to receive(:code).and_return(200)
+  #     allow(response).to receive(:body).and_return(json)
+  #     response
+  #   end
 
-    it 'loads data' do
-      allow(Net::HTTP).to receive(:start).and_return(http_response)
-      expect(subject).to receive(:load_from_json!).with(json)
-      subject.load_from_url!('http://test')
-    end
-  end
+  #   it 'loads data' do
+  #     allow(Net::HTTP).to receive(:start).and_return(http_response)
+  #     expect(subject).to receive(:load_from_json!).with(json)
+  #     subject.load_from_url!('http://test')
+  #   end
+  # end
 end

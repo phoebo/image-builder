@@ -24,7 +24,7 @@ describe Phoebo::Docker::ImageBuilder do
 
     image = instance_double(Phoebo::Config::Image)
     allow(image).to receive(:name).and_return('image-name')
-    allow(image).to receive(:from).and_return('debian')
+    allow(image).to receive(:from).and_return([ :base_image, 'debian'])
     allow(image).to receive(:actions).and_return(actions)
 
     image
