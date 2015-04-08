@@ -113,6 +113,11 @@ module Phoebo
 
         _apply_task_options(task, options)
 
+        if options[:on_demand]
+          task[:on_demand] = options[:on_demand] ? true : false
+          options.delete(:on_demand)
+        end
+
         unless options.empty?
           raise Phoebo::SyntaxError.new("Unexpected parameter #{options.keys.first} for task #{name}.")
         end
