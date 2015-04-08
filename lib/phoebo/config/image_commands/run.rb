@@ -5,9 +5,9 @@ module Phoebo::Config::ImageCommands
   	end
 
   	def self.action(cmd, *args)
-      return Proc.new do |dockerfile, files|
+      return Proc.new do |build|
         # TODO: decide which exec method we will use and enforce escaping
-        dockerfile << "RUN #{cmd} #{args.join(' ')}"
+        build << "RUN #{cmd} #{args.join(' ')}"
       end
   	end
   end

@@ -5,12 +5,8 @@ module Phoebo::Config::ImageCommands
   	end
 
   	def self.action(src, dest)
-      return Proc.new do |dockerfile, files|
-
-        virtual = 'project/' + src
-        files[virtual] = src
-
-        dockerfile << 'ADD ' + virtual + ' ' + dest
+      return Proc.new do |build|
+        build.copy(build.base_path + src, dest)
       end
   	end
   end

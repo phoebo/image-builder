@@ -104,7 +104,7 @@ module Phoebo
         task
       end
 
-      def task(name, image, *args)
+      def task(name, options = {})
         _task_definition_check('service', name, options)
 
         task = {

@@ -47,9 +47,13 @@ module Phoebo
 
         # Define action methods for all commands
         ImageCommands.commands.each do |id, command_class|
-          define_method(id) do |*args|
-            @image.actions << command_class.send(:action, *args)
+          define_method(id) do |*args, &block|
+            @image.actions << command_class.send(:action, *args, &block)
           end
+        end
+
+        def method_missing(name, args, block)
+          raise Phoebo::SyntaxError.new("No such build command #{name} for image #{@image.name}")
         end
       end
 
