@@ -6,10 +6,10 @@ module Phoebo
     attr_accessor :images, :tasks
 
     # Loads config from file
-    # @see Phoebo.configure()
-    def self.new_from_file(file_path)
+    def self.new_from_file(file_path, request = nil)
       begin
         @instance = nil
+        @args     = [ request, file_path ]
         Kernel.load file_path, true
         @instance
 
@@ -18,20 +18,25 @@ module Phoebo
       end
     end
 
+    # @see Phoebo.configure()
     def self.new_from_block(block)
-      @instance = self.new
+      args = @args || [ nil, nil ]
+      @args = nil
+
+      @instance = self.new(*args)
       @instance.dsl_eval(block)
     end
 
     # Instance initialization
-    def initialize
+    def initialize(request = nil, config_path = nil)
+      @request = request
       @images = []
       @tasks = []
     end
 
     # Evaluate block within DSL context
     def dsl_eval(block)
-      @dsl ||= DSL.new(self)
+      @dsl ||= DSL.new(self, @request)
       @dsl.instance_eval(&block)
 
       # Finish config
@@ -51,8 +56,13 @@ module Phoebo
 
     # Private DSL
     class DSL
-      def initialize(config)
-        @config = config
+      def initialize(config, request)
+        @config  = config
+        @request = request
+      end
+
+      def secrets
+        @request ? @request.secrets : {}
       end
 
       def image(name, options, &block)
