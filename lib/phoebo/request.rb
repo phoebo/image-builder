@@ -8,7 +8,8 @@ module Phoebo
   # input from multiple sources (HTTP request, CLI options) and provides data
   # validation with human-readable error messages.
   class Request
-    attr_accessor :repo_url, :ssh_user, :ssh_private_file, :ssh_public_file
+    attr_accessor :repo_url, :ref
+    attr_accessor :ssh_user, :ssh_private_file, :ssh_public_file
     attr_accessor :docker_user, :docker_password, :docker_email
     attr_accessor :id, :ping_url
     attr_writer :temp_file_manager

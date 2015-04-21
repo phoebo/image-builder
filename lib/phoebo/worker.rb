@@ -23,7 +23,7 @@ module Phoebo
         config = Config.new_from_file(config_path, @request)
 
         # Build & push image
-        builder = Docker::ImageBuilder.new(path)
+        builder = Docker::ImageBuilder.new(path, @request)
         config.images.each do |image|
           image_id = builder.build(image)
           pusher.push(image_id) if @request.docker_user
