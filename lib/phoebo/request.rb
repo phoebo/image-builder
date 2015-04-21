@@ -36,19 +36,19 @@ module Phoebo
       IO.write(@ssh_public_file, key_content)
     end
 
-    # Secrets (default: empty hash)
-    def secrets
-      @secrets ||= {}
+    # Params (default: empty hash)
+    def params
+      @params ||= {}
     end
 
-    # Secrets validation on set
-    def secrets=(hash)
+    # Params validation on set
+    def params=(hash)
       hash.each do |key, value|
-        raise InvalidRequestError, "Invalid format for request secret #{key.inspect}" \
+        raise InvalidRequestError, "Invalid format for request parameter #{key.inspect}" \
           unless value.is_a? String or value.is_a? Numeric
       end
 
-      @secrets = hash
+      @params = hash
     end
 
     # Loads request with data from hash

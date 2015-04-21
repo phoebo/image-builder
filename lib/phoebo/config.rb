@@ -61,8 +61,8 @@ module Phoebo
         @request = request
       end
 
-      def secrets
-        @request ? @request.secrets : {}
+      def params
+        @request ? @request.params : {}
       end
 
       def image(name, options, &block)
