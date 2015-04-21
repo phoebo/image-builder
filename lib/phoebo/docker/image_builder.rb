@@ -1,6 +1,7 @@
 require 'rubygems/package'
 require 'docker'
 require 'colorize'
+require 'securerandom'
 
 module Phoebo
   module Docker
