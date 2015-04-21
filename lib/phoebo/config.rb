@@ -49,6 +49,10 @@ module Phoebo
             raise Phoebo::SyntaxError.new("You need to define image for #{id}.")
           end
         end
+
+        unless task[:image] =~ /:[^:]+$/i
+          task[:image] += ":#{Image.tag(@request.ref)}"
+        end
       end
 
       self

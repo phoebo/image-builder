@@ -40,6 +40,6 @@ describe Phoebo::Docker::ImageBuilder do
 
   it 'processes commands' do
     expect(Docker::Image).to receive(:build_from_tar).and_return(docker_image)
-    subject.build(image)
+    subject.build(image, 'latest')
   end
 end

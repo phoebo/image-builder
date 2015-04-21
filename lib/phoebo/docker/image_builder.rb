@@ -8,12 +8,11 @@ module Phoebo
     class ImageBuilder
       include Console
 
-      def initialize(base_path, request)
+      def initialize(base_path)
         @base_path = Pathname.new(base_path)
-        @request = request
       end
 
-      def build(image)
+      def build(image, tag)
         project_files = { }
         dockerfile = []
 
@@ -49,7 +48,6 @@ module Phoebo
           stdout.print " virtual size: " + ('%.2f MB' % (built_image.json['VirtualSize'].to_f / 1000 / 1000)).cyan
           stdout.puts
 
-          tag = @request.ref ? @request.ref[0...8] : 'latest'
           stdout.puts "Tagging image #{built_image.id.to_s.cyan} -> #{image.name.cyan}#{':'.cyan}#{tag.cyan}"
           built_image.tag('repo' => image.name, 'tag' => tag, 'force' => true)
 

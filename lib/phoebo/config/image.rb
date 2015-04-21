@@ -7,6 +7,8 @@ module Phoebo
         @actions = []
         @name = name
 
+        raise Phoebo::SyntaxError.new('Invalid image name.') if name.include?(':')
+
         if options.is_a?(Hash)
 
           # image('my-image', from: 'base-image')
@@ -57,6 +59,18 @@ module Phoebo
         end
       end
 
+      # Create image tag from ref
+      def self.tag(ref)
+        if ref
+          if ref =~ /^[0-9a-f]+$/i
+            return ref[0...8].downcase
+          else
+            return ref
+          end
+        else
+          return 'latest'
+        end
+      end
     end
   end
 end
