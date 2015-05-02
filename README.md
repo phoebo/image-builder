@@ -1,4 +1,45 @@
-# Phoebo
+# Image Builder
+
+This project is a component of Phoebo CI responsible for building Docker images.
+
+## Local installation
+
+### Requirements
+
+- Docker
+
+### Install as Gem
+
+```bash
+# Necessary libraries for working SSH authorization for Git (Rugged)
+apt-get install cmake pkg-config libssh2-1-dev
+
+# Install Rugged with previously installed system libraries
+gem install rugged -- --use-system-libraries
+
+# Install Phoebo Image Builder
+gem install phoebo
+```
+
+## Use inside of Docker
+
+### With shared Docker
+
+```bash
+docker run \
+  -v /var/run/docker.sock:/tmp/docker.sock
+  -e NO_DIND=1 -e DOCKER_URL=unix:///tmp/docker.sock \
+  phoebo/image-builder:latest \
+  phoebo --help
+```
+
+### DinD
+
+```bash
+docker run --privileged \
+  phoebo/image-builder:latest \
+  phoebo --help
+```
 
 ## DSL example
 
@@ -6,7 +47,7 @@
 Phoebo.configure(1) {
 
   # Create image based on Apache + mod_php
-  image('phoebo/nette-example', 'phoebo/simple-apache-php') {
+  image('phoebo/nette-example', from: 'phoebo/simple-apache-php') {
     # Copy all application data
     add('.', '/app/')
 
@@ -17,11 +58,13 @@ Phoebo.configure(1) {
     run('ln', '-s', '/app/www', '/var/www')
   }
 
-  # Deploy image and keep it runing (default CMD: apache)
-  task('deploy', 'phoebo/nette-example')
-
-  # Run tests on image
-  task('test', 'phoebo/nette-example', '/app/bin/tester', '/app/tests')
+  # Deploy image and start web server (default CMD: apache)
+  service(’Web’,
+    image: ’phoebo/nette-example’,
+    ports: [
+      { tcp: 80 }
+    ]
+  )
 }
 ~~~
 
@@ -93,3 +136,7 @@ Other than that payload contains list of tasks with arguments and image on which
    ]
 }
 ~~~
+
+## Contact
+
+Project is developed by Adam Staněk <adam.stanek@v3net.cz>
