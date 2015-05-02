@@ -13,7 +13,7 @@ module Phoebo
 
           # image('my-image', from: 'base-image')
           if options[:from]
-            @from = [ :image, options[:from] ]
+            @from = [ :base_image, options[:from] ]
             raise Phoebo::SyntaxError.new('You can only use from: or from_dockerfile: directive as a base for your images.') if options[:from_dockerfile]
 
           # image('my-image', from_dockerfile: 'Dockerfile')
