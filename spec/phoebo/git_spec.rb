@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe Phoebo::Git do
+describe Phoebo::Git, skip: Phoebo::Git.available? ? false : "No Git implementation installed" do
 
   subject { described_class }
 
